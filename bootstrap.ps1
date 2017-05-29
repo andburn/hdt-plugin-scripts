@@ -1,10 +1,10 @@
 ﻿#Requires -Version 3.0
 
-$RootDir = $PSScriptRoot
 $Common = "Common"
-$CommonRepo = "https://github.com/andburn/hdt-plugin-common.git"
 $TempName = "CommonTemp"
+$RootDir =  Resolve-Path "$PSScriptRoot\.."
 $TempDir = "$RootDir\$TempName"
+$CommonRepo = "https://github.com/andburn/hdt-plugin-common.git"
 
 Function RemoveDirectoryIfExists {
 Param( [string]$Directory )
@@ -74,7 +74,7 @@ if (Get-Command "git.exe" -ErrorAction SilentlyContinue) {
     RemoveDirectoryIfExists $TempDir
     # clone the Common repo to a temp directory
     Write-Host "Cloning common repo"
-    git clone -q --branch=master --depth=1 $CommonRepo $TempName
+    git clone -q --branch=master --depth=1 $CommonRepo $TempDir
     if (-not (DirectoryExistsAndIsNonEmpty $TempDir)) {
         ErrorAndExit "failed to clone git repository"
     }

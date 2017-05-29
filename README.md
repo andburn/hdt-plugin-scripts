@@ -1,3 +1,3 @@
 ## HDT Plugin Scripts
 
-Scripts used in @andburn's HDT plugin projects.
+Scripts used in [@andburn](https://github.com/andburn)'s HDT plugin projects.
