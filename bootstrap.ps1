@@ -78,6 +78,7 @@ if (Get-Command "git.exe" -ErrorAction SilentlyContinue) {
     if (-not (DirectoryExistsAndIsNonEmpty $TempDir)) {
         ErrorAndExit "failed to clone git repository"
     }
+    Write-Host "Renaming project files"
     # get the name of the plugin/solution
     $name = GetSolutionName
     # get the GUID assigned to the common project of this plugin
@@ -92,6 +93,7 @@ if (Get-Command "git.exe" -ErrorAction SilentlyContinue) {
     Rename-Item "$TempDir\$Common\$Common.csproj" "$TempDir\$Common\$name.$Common.csproj"
     Rename-Item "$TempDir\$Common" "$TempDir\$name.$Common"
     # delete any existing files in this plugins common project
+    Write-Host "Cleaning up"
     RemoveDirectoryIfExists "$RootDir\$name.$Common"
     # copy the new Common project in its place
     Copy-Item "$TempDir\$name.$Common" $RootDir -Force -Recurse
