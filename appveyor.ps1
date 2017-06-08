@@ -44,16 +44,6 @@ If ($PreBuild) {
 	Write-Host -Foreground Cyan "Creating deployment artifacts"
 	BuildArtifacts $ProjectName "hdt-plugin-$ProjectNameLower" "$Root\$ProjectName" "bin\x86\Release"
 } ElseIf ($PostTest) {
-	$OpenCoverPath = Package-Path('OpenCover')
-	$NunitPath = Package-Path('NUnit.ConsoleRunner')
-	$CoverallsPath = Package-Path('coveralls')
-
-	& "$OpenCoverPath\tools\OpenCover.Console.exe" `
-		-register:user `
-		-target:"$NunitPath\tools\nunit3-console.exe" `
-		-targetargs:"--noheader /domain:single $ProjectName.Tests/bin/x86/release/$ProjectName.Tests.dll" `
-		-filter:"+[$ProjectName]*" -mergebyhash -skipautoprops `
-		-output:"coverage.xml"
-
-	& "$CoverallsPath\tools\coveralls.net.exe" --opencover coverage.xml
+	Write-Host -Foreground Cyan "Analyzing code coverage"
+	RunCodeCoverage $ProjectName
 }
