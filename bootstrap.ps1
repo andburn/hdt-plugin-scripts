@@ -1,10 +1,16 @@
-﻿#Requires -Version 3.0
+#Requires -Version 3.0
+
+Param(
+	[switch]$LocalOnly
+)
 
 $Common = "Common"
 $TempName = "CommonTemp"
 $RootDir =  Resolve-Path "$PSScriptRoot\.."
 $TempDir = "$RootDir\$TempName"
+$LocalDir = Resolve-Path "$RootDir\..\common"
 $CommonRepo = "https://github.com/andburn/hdt-plugin-common.git"
+$CopyIgnore = @(".git", ".vs", "packages", "TestResults")
 
 Function RemoveDirectoryIfExists {
 Param( [string]$Directory )
@@ -69,14 +75,9 @@ Param(
     }
 }
 
-# git is required exit if not found
-if (Get-Command "git.exe" -ErrorAction SilentlyContinue) {
-    RemoveDirectoryIfExists $TempDir
-    # clone the Common repo to a temp directory
-    Write-Host "Cloning common repo"
-    git clone -q --branch=master --depth=1 $CommonRepo $TempDir
-    if (-not (DirectoryExistsAndIsNonEmpty $TempDir)) {
-        ErrorAndExit "failed to clone git repository"
+Function EditAndReplaceCommonProject {
+	if (-not (DirectoryExistsAndIsNonEmpty $TempDir)) {
+        ErrorAndExit "failed to copy repository"
     }
     Write-Host "Renaming project files"
     # get the name of the plugin/solution
@@ -99,6 +100,21 @@ if (Get-Command "git.exe" -ErrorAction SilentlyContinue) {
     Copy-Item "$TempDir\$name.$Common" $RootDir -Force -Recurse
     # remove the temporary files
     RemoveDirectoryIfExists $TempDir
+}
+
+# if local switch is given, copy local repo
+if ($LocalOnly) {
+	RemoveDirectoryIfExists $TempDir
+	mkdir $TempDir > $null
+	Copy-Item "$LocalDir\*" $TempDir -Recurse -Exclude $CopyIgnore
+	EditAndReplaceCommonProject
+# if git is found pull remote repo, exit if not found
+} elseif (Get-Command "git.exe" -ErrorAction SilentlyContinue) {
+    RemoveDirectoryIfExists $TempDir
+    # clone the Common repo to a temp directory
+    Write-Host "Cloning common repo"
+    git clone -q --branch=master --depth=1 $CommonRepo $TempDir
+    EditAndReplaceCommonProject
 } else {
     ErrorAndExit "git not found, make sure it is included in `$Path"
 }
