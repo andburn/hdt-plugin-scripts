@@ -67,7 +67,8 @@ Param(
     [string]$Name
 )
     # not the most robust way, but faster than searching all files
-    $files = "Controls\MoonTextButton.xaml", "Controls\Styles.xaml", "Utils\PluginMenu.cs"
+    $files = @("Controls\MoonTextButton.xaml", "Controls\Styles.xaml", "Utils\PluginMenu.cs",
+		"Controls\SimpleToast.xaml")
     foreach ($f in $files) {
         $file = "$TempDir\$Common\$f"
         $content = Get-Content $file
