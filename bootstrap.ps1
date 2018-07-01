@@ -8,7 +8,6 @@ $Common = "Common"
 $TempName = "CommonTemp"
 $RootDir =  Resolve-Path "$PSScriptRoot\.."
 $TempDir = "$RootDir\$TempName"
-$LocalDir = Resolve-Path "$RootDir\..\common"
 $CommonRepo = "https://github.com/andburn/hdt-plugin-common.git"
 $CopyIgnore = @(".git", ".vs", "packages", "TestResults")
 
@@ -107,7 +106,8 @@ Function EditAndReplaceCommonProject {
 if ($LocalOnly) {
 	RemoveDirectoryIfExists $TempDir
 	mkdir $TempDir > $null
-	Copy-Item "$LocalDir\*" $TempDir -Recurse -Exclude $CopyIgnore
+	$local = Resolve-Path "$RootDir\..\common"
+	Copy-Item "$local\*" $TempDir -Recurse -Exclude $CopyIgnore
 	EditAndReplaceCommonProject
 # if git is found pull remote repo, exit if not found
 } elseif (Get-Command "git.exe" -ErrorAction SilentlyContinue) {
