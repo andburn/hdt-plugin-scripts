@@ -32,11 +32,11 @@ Function Package-Path($name)
 
 If ($PreBuild) {
 	# Restore nuget packages and get dependent libraries
-	Write-Host -Foreground Cyan "Cloning dependencies from GitHub"	
+	Write-Host -Foreground Cyan "Downloading latest HDT release"
 	GetLatestRelease $Root "HearthSim" "Hearthstone-Deck-Tracker" -Scrape
+	Write-Host -Foreground Green "Download Complete"
 	$ExtractPath = Join-Path -Path $Root -ChildPath "Hearthstone Deck Tracker"
 	Rename-Item -NewName "$ExtractPath\HearthstoneDeckTracker.exe" "$ExtractPath\Hearthstone Deck Tracker.exe"
-	GetLatestRelease $Root "andburn" "hdt-plugin-common" -Scrape
 	Write-Host -Foreground Cyan "Restoring nuget packages"	
 	nuget restore
 } ElseIf ($PostBuild) {
