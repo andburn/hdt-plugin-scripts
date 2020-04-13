@@ -14,7 +14,8 @@ $CopyIgnore = @(".git", ".vs", "packages", "TestResults")
 Function RemoveDirectoryIfExists {
 Param( [string]$Directory )
     if (Test-Path $Directory) {
-        Remove-Item $Directory -Force -Recurse
+		Get-ChildItem -Path $Directory -Recurse | Remove-Item -Force -Recurse
+		Remove-Item $Directory -Force -Recurse
     }
 }
 
